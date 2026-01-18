@@ -1,94 +1,201 @@
-# Poppins Font Files - Local Hosting Setup
+# Bigul Algo Trading Platform
 
-This directory should contain the Poppins font files for local hosting.
+A modern, React-based platform for discovering, creating, and managing algorithmic trading strategies.
 
-## ✅ Code Setup Complete
+## Project Structure
 
-The code has been updated to use local fonts. You just need to add the font files.
+```
+project/
+├── docs/                      # Documentation files
+│   └── FONTS.md              # Font setup documentation
+├── prototypes/               # HTML mockups and design prototypes
+│   ├── discover-strategy-*.html
+│   └── strategy-deploy-*.html
+├── public/                   # Static assets
+│   └── fonts/               # Font files and download scripts
+│       ├── poppins.css
+│       ├── poppins-*.woff2
+│       ├── download-fonts.py
+│       └── download-fonts.sh
+├── src/                     # Source code
+│   ├── assets/             # Stylesheets and static resources
+│   │   └── styles.css
+│   ├── components/         # Reusable React components
+│   │   ├── StrategyCard.tsx
+│   │   ├── StrategyModal.tsx
+│   │   └── DeploySection.tsx
+│   ├── pages/              # Page components
+│   │   ├── DiscoverStrategies.tsx
+│   │   └── StrategyDetails.tsx
+│   ├── types/              # TypeScript type definitions
+│   │   └── strategy.ts
+│   ├── utils/              # Utility functions and constants
+│   │   └── constants.ts
+│   └── main.tsx           # Application entry point
+├── .env                    # Environment variables
+├── .gitignore             # Git ignore rules
+├── index.html             # HTML entry point
+├── package.json           # NPM dependencies and scripts
+├── tsconfig.json          # TypeScript configuration
+├── vite.config.ts         # Vite build configuration
+└── README.md              # This file
+```
 
-## Required Font Files
+## Features
 
-Please download and place the following font files in this directory (`public/fonts/`):
+### Strategy Discovery
+- Browse available trading strategies
+- View strategy details, metrics, and performance
+- Bookmark favorite strategies
+- Filter by tags (Intraday, Medium Risk, Nifty, Options)
+- Interactive strategy cards with animations
 
-### Required Files:
-- `poppins-regular.woff2` (weight: 400)
-- `poppins-regular.woff` (weight: 400, fallback)
-- `poppins-medium.woff2` (weight: 500)
-- `poppins-medium.woff` (weight: 500, fallback)
-- `poppins-semibold.woff2` (weight: 600)
-- `poppins-semibold.woff` (weight: 600, fallback)
-- `poppins-bold.woff2` (weight: 700)
-- `poppins-bold.woff` (weight: 700, fallback)
+### Strategy Deployment
+- Forward Test mode (Paper Trading/Simulation)
+- Live Trading mode with capital requirements
+- Visual nudges for risk awareness
+- Capital requirement comparisons for expiry/non-expiry days
 
-## How to Download Poppins Fonts
+### Components
 
-### Option 1: Google Fonts Helper (Easiest - Recommended) ⭐
-1. Visit: **https://google-webfonts-helper.herokuapp.com/fonts/poppins**
-2. Select the weights: **400 (Regular), 500 (Medium), 600 (SemiBold), 700 (Bold)**
-3. Select formats: **woff2** and **woff**
-4. Click "Download @font-face kit"
-5. Extract the ZIP file
-6. Copy all `.woff2` and `.woff` files to this directory (`public/fonts/`)
-7. Rename files to match the naming convention below
+#### StrategyCard
+Displays strategy information in a card format with:
+- Strategy name and actions (bookmark, share)
+- Tags and last deployed time
+- Description with show more functionality
+- Key metrics (Min Capital, Avg Return, Status)
+- Gradient buttons and interactive elements
 
-### Option 2: Direct from Google Fonts
-1. Visit: **https://fonts.google.com/specimen/Poppins**
-2. Click **"Download family"** button
-3. Extract the ZIP file
-4. Navigate to the extracted folder → `static` folder
-5. Copy and rename the files:
-   - `Poppins-Regular.woff2` → `poppins-regular.woff2`
-   - `Poppins-Regular.woff` → `poppins-regular.woff`
-   - `Poppins-Medium.woff2` → `poppins-medium.woff2`
-   - `Poppins-Medium.woff` → `poppins-medium.woff`
-   - `Poppins-SemiBold.woff2` → `poppins-semibold.woff2`
-   - `Poppins-SemiBold.woff` → `poppins-semibold.woff`
-   - `Poppins-Bold.woff2` → `poppins-bold.woff2`
-   - `Poppins-Bold.woff` → `poppins-bold.woff`
+#### StrategyModal
+Full-screen modal for displaying complete strategy descriptions.
 
-### Option 3: Using Download Scripts
-You can also use the provided scripts:
-- **Python**: Run `python3 public/fonts/download-fonts.py`
-- **Bash**: Run `bash public/fonts/download-fonts.sh`
+#### DeploySection
+Strategy deployment interface with:
+- Mode selection (Forward Test vs Live Trading)
+- Contextual nudges based on selected mode
+- Capital requirement tables
+- Deploy button with gradient styling
 
-Note: Scripts may require network access and proper SSL certificates.
+## Technology Stack
 
-## File Naming Convention
+- **React 18** - UI library
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **CSS3** - Styling with animations
 
-The font files **MUST** be named exactly as listed above for the CSS to work correctly:
-- All lowercase
-- Hyphens between words
-- Format: `poppins-{weight}.woff2` and `poppins-{weight}.woff`
+## Getting Started
 
-## After Adding Font Files
+### Prerequisites
+- Node.js 18+ and npm
 
-Once you've added the font files:
-1. **Restart your development server** (`npm run dev` or `yarn dev`)
-2. **Clear browser cache** (or use hard refresh: Cmd+Shift+R / Ctrl+Shift+R)
-3. The fonts should now load locally instead of from Google Fonts CDN
+### Installation
 
-## Verification
+1. Install dependencies:
+```bash
+npm install
+```
 
-To verify fonts are loading locally:
-1. Open browser **DevTools** (F12)
-2. Go to **Network** tab
-3. Filter by **"Font"** or search for "woff"
-4. Reload the page
-5. You should see requests to `/fonts/poppins-*.woff2` instead of `fonts.googleapis.com`
-6. Check the **Console** tab - there should be no font loading errors
+2. Set up fonts (optional):
+```bash
+# Using Python
+python3 public/fonts/download-fonts.py
 
-## Current Setup
+# Or using Bash
+bash public/fonts/download-fonts.sh
+```
 
-- ✅ Font-face declarations: `src/fonts/poppins.css`
-- ✅ CSS imports updated: `src/index.css` and `app/globals.css`
-- ✅ Google Fonts links removed: `index.html`
-- ⏳ Font files: **Need to be added** (download using one of the options above)
+3. Start the development server:
+```bash
+npm run dev
+```
 
-## Troubleshooting
+The application will open at `http://localhost:3000`.
 
-If fonts don't load:
-1. Check file names match exactly (case-sensitive)
-2. Verify files are in `public/fonts/` directory
-3. Check browser console for 404 errors
-4. Ensure development server is restarted
-5. Clear browser cache completely
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+- `npm run type-check` - Run TypeScript type checking
+
+## Design System
+
+### Colors
+- **Primary**: #5266FC (Blue)
+- **Gradient**: #5367fc → #4d6ff7 → #00e8b0
+- **Success**: #10b981 (Green)
+- **Warning**: #f59e0b (Orange)
+- **Gray**: #666
+- **Dark**: #1a1a1a
+
+### Typography
+- **Font Family**: Poppins (400, 500, 600, 700)
+- **Base Font Size**: 14px
+
+### Tag Colors
+- **Intraday**: Blue (#E8EAFF / #5266FC)
+- **Medium**: Yellow (#FEF3C7 / #92400E)
+- **Nifty**: Green (#DCFCE7 / #166534)
+- **Options**: Purple (#F3E8FF / #7C3AED)
+
+## Component API
+
+### StrategyCard Props
+```typescript
+interface StrategyCardProps {
+  name: string;
+  tags: Tag[];
+  description: string;
+  lastDeployed?: string;
+  minCapital: string;
+  avgReturn: string;
+  backtestTooltip: string;
+  status: 'deployed' | 'available';
+  isBookmarked?: boolean;
+  onBookmark?: () => void;
+  onShare?: () => void;
+  onView?: () => void;
+  onShowMore?: () => void;
+}
+```
+
+### DeploySection Props
+```typescript
+interface DeploySectionProps {
+  strategyName: string;
+  expiryDayCapital?: string;
+  nonExpiryDayCapital?: string;
+  onDeploy: (mode: DeployMode) => void;
+}
+```
+
+## Prototypes
+
+HTML mockups are available in the `prototypes/` directory for reference:
+- `discover-strategy-final.html` - Final strategy discovery design
+- `strategy-deploy-nudges-v3.html` - Latest deployment nudges design
+
+## Environment Variables
+
+Create a `.env` file in the root directory:
+```
+VITE_API_URL=your_api_url
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_anon_key
+```
+
+## Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## License
+
+Proprietary - Bigul
+
+## Contributing
+
+This is a private project. Contact the development team for contribution guidelines.
