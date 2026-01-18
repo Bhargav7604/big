@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Strategy - Min Capital Options</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #F5F5F5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 32px;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .option-section {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .option-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .option-description {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+        
+        .strategy-card {
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .strategy-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .strategy-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            min-height: 28px;
+        }
+        
+        .tag {
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #E8EAFF;
+            color: #5266FC;
+        }
+        
+        .last-deployed {
+            font-size: 9px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #5266FC 0%, #3b9fd8 50%, #00e8b0 100%);
+            color: white;
+            margin-left: auto;
+        }
+        
+        .description {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 60px;
+        }
+        
+        .show-more {
+            font-size: 12px;
+            font-weight: 600;
+            color: #5266FC;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 4px;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e5e5;
+        }
+        
+        .stat-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .stat-label {
+            font-size: 9px;
+            color: #666;
+        }
+        
+        .stat-value {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .stat-value.gradient {
+            background: linear-gradient(to right, #4d6ff7, #00e8b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .view-btn {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #5367fc 0%, #4d6ff7 50%, #00e8b0 100%);
+            border: none;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-left: 12px;
+            flex-shrink: 0;
+        }
+        
+        /* Option 1: Toggle Switch */
+        .option1-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        
+        .toggle-switch {
+            display: flex;
+            background: #f0f0f0;
+            border-radius: 12px;
+            padding: 2px;
+            gap: 2px;
+        }
+        
+        .toggle-btn {
+            padding: 2px 8px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 8px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .toggle-btn.active {
+            background: #5266FC;
+            color: white;
+        }
+        
+        .capital-values {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .capital-value {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .capital-value.inactive {
+            color: #999;
+            font-size: 10px;
+        }
+        
+        /* Option 2: Two Values Side by Side */
+        .option2-capital-row {
+            display: flex;
+            gap: 8px;
+            align-items: baseline;
+        }
+        
+        .capital-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .capital-label-small {
+            font-size: 7px;
+            color: #999;
+            text-transform: uppercase;
+        }
+        
+        .capital-value-main {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        /* Option 3: Dropdown/Select */
+        .option3-select {
+            font-size: 10px;
+            padding: 2px 6px;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            background: white;
+            margin-bottom: 4px;
+        }
+        
+        /* Option 4: Tabs */
+        .option4-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 4px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .tab-btn {
+            padding: 2px 6px;
+            border: none;
+            background: transparent;
+            font-size: 8px;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+        
+        .tab-btn.active {
+            color: #5266FC;
+            border-bottom-color: #5266FC;
+        }
+        
+        /* Option 5: Icon with Tooltip */
+        .option5-capital-with-info {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+        
+        .info-icon {
+            font-size: 10px;
+            color: #999;
+            cursor: help;
+        }
+        
+        .info-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            margin-bottom: 4px;
+            padding: 6px 8px;
+            background: #333;
+            color: white;
+            font-size: 9px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        
+        .info-container:hover .info-tooltip {
+            opacity: 1;
+        }
+        
+        /* Option 6: Stacked with Labels */
+        .option6-capital-stacked {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .capital-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+        }
+        
+        .capital-type {
+            color: #666;
+            font-size: 9px;
+        }
+        
+        .capital-amount {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        /* Asterisk for Avg Return */
+        .asterisk-group {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .asterisk {
+            font-size: 10px;
+            color: #999;
+            cursor: help;
+            margin-left: 2px;
+        }
+        
+        .asterisk-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 4px;
+            padding: 6px 8px;
+            background: #333;
+            color: white;
+            font-size: 9px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        
+        .asterisk-group:hover .asterisk-tooltip {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">Min Capital - Expiry Day vs Non-Expiry Day Options</h1>
+        <p class="page-subtitle">Please review different design options for showing Min Capital in two scenarios</p>
+        
+        <div class="options-grid">
+            <!-- Option 1: Toggle Switch -->
+            <div class="option-section">
+                <div class="option-title">Option 1: Toggle Switch</div>
+                <div class="option-description">Toggle between Expiry Day and Non-Expiry Day with switch buttons</div>
+                <div class="strategy-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                        <div class="strategy-actions">
+                            <button class="action-btn">🔖</button>
+                            <button class="action-btn">📤</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tags-row">
+                        <span class="tag">Intraday</span>
+                        <span class="tag">Medium</span>
+                        <span class="last-deployed">Last deployed 2 days ago</span>
+                    </div>
+                    
+                    <div class="description">
+                        This strategy uses delta-neutral positioning to minimize directional risk while capturing volatility premiums. It involves simultaneous long and short positions in options to maintain a delta-neutral portfolio.
+                    </div>
+                    <button class="show-more">Show more</button>
+                    
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="option1-toggle">
+                                <div class="toggle-switch">
+                                    <button class="toggle-btn active">Expiry</button>
+                                    <button class="toggle-btn">Non-Expiry</button>
+                                </div>
+                            </div>
+                            <div class="stat-label">Min Capital</div>
+                            <div class="capital-values">
+                                <div class="capital-value">₹50k</div>
+                                <div class="capital-value inactive">₹35k (Non-Expiry)</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">
+                                Avg Return
+                                <span class="asterisk-group">
+                                    <span class="asterisk">*</span>
+                                    <span class="asterisk-tooltip">Information is based on last 3 month trades</span>
+                                </span>
+                            </div>
+                            <div class="stat-value gradient">Backtest</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" style="color: #10b981;">Deployed</div>
+                        </div>
+                        <button class="view-btn">→</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Option 2: Two Values Side by Side -->
+            <div class="option-section">
+                <div class="option-title">Option 2: Side by Side</div>
+                <div class="option-description">Show both values side by side with small labels</div>
+                <div class="strategy-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                        <div class="strategy-actions">
+                            <button class="action-btn">🔖</button>
+                            <button class="action-btn">📤</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tags-row">
+                        <span class="tag">Intraday</span>
+                        <span class="tag">Medium</span>
+                        <span class="last-deployed">Last deployed 2 days ago</span>
+                    </div>
+                    
+                    <div class="description">
+                        This strategy uses delta-neutral positioning to minimize directional risk while capturing volatility premiums. It involves simultaneous long and short positions in options to maintain a delta-neutral portfolio.
+                    </div>
+                    <button class="show-more">Show more</button>
+                    
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Min Capital</div>
+                            <div class="option2-capital-row">
+                                <div class="capital-item">
+                                    <div class="capital-label-small">Expiry</div>
+                                    <div class="capital-value-main">₹50k</div>
+                                </div>
+                                <div style="color: #e5e5e5; margin: 0 4px;">|</div>
+                                <div class="capital-item">
+                                    <div class="capital-label-small">Non-Expiry</div>
+                                    <div class="capital-value-main">₹35k</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">
+                                Avg Return
+                                <span class="asterisk-group">
+                                    <span class="asterisk">*</span>
+                                    <span class="asterisk-tooltip">Information is based on last 3 month trades</span>
+                                </span>
+                            </div>
+                            <div class="stat-value gradient">Backtest</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" style="color: #10b981;">Deployed</div>
+                        </div>
+                        <button class="view-btn">→</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Option 3: Dropdown/Select -->
+            <div class="option-section">
+                <div class="option-title">Option 3: Dropdown Select</div>
+                <div class="option-description">Dropdown to select between Expiry Day and Non-Expiry Day</div>
+                <div class="strategy-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                        <div class="strategy-actions">
+                            <button class="action-btn">🔖</button>
+                            <button class="action-btn">📤</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tags-row">
+                        <span class="tag">Intraday</span>
+                        <span class="tag">Medium</span>
+                        <span class="last-deployed">Last deployed 2 days ago</span>
+                    </div>
+                    
+                    <div class="description">
+                        This strategy uses delta-neutral positioning to minimize directional risk while capturing volatility premiums. It involves simultaneous long and short positions in options to maintain a delta-neutral portfolio.
+                    </div>
+                    <button class="show-more">Show more</button>
+                    
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <select class="option3-select">
+                                <option>Expiry Day</option>
+                                <option>Non-Expiry Day</option>
+                            </select>
+                            <div class="stat-label">Min Capital</div>
+                            <div class="stat-value">₹50k</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">
+                                Avg Return
+                                <span class="asterisk-group">
+                                    <span class="asterisk">*</span>
+                                    <span class="asterisk-tooltip">Information is based on last 3 month trades</span>
+                                </span>
+                            </div>
+                            <div class="stat-value gradient">Backtest</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" style="color: #10b981;">Deployed</div>
+                        </div>
+                        <button class="view-btn">→</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Option 4: Tabs -->
+            <div class="option-section">
+                <div class="option-title">Option 4: Tabs</div>
+                <div class="option-description">Tab buttons to switch between Expiry and Non-Expiry Day</div>
+                <div class="strategy-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                        <div class="strategy-actions">
+                            <button class="action-btn">🔖</button>
+                            <button class="action-btn">📤</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tags-row">
+                        <span class="tag">Intraday</span>
+                        <span class="tag">Medium</span>
+                        <span class="last-deployed">Last deployed 2 days ago</span>
+                    </div>
+                    
+                    <div class="description">
+                        This strategy uses delta-neutral positioning to minimize directional risk while capturing volatility premiums. It involves simultaneous long and short positions in options to maintain a delta-neutral portfolio.
+                    </div>
+                    <button class="show-more">Show more</button>
+                    
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="option4-tabs">
+                                <button class="tab-btn active">Expiry</button>
+                                <button class="tab-btn">Non-Expiry</button>
+                            </div>
+                            <div class="stat-label">Min Capital</div>
+                            <div class="stat-value">₹50k</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">
+                                Avg Return
+                                <span class="asterisk-group">
+                                    <span class="asterisk">*</span>
+                                    <span class="asterisk-tooltip">Information is based on last 3 month trades</span>
+                                </span>
+                            </div>
+                            <div class="stat-value gradient">Backtest</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" style="color: #10b981;">Deployed</div>
+                        </div>
+                        <button class="view-btn">→</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Option 5: Icon with Tooltip -->
+            <div class="option-section">
+                <div class="option-title">Option 5: Info Icon with Tooltip</div>
+                <div class="option-description">Show main value with info icon that reveals both values on hover</div>
+                <div class="strategy-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                        <div class="strategy-actions">
+                            <button class="action-btn">🔖</button>
+                            <button class="action-btn">📤</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tags-row">
+                        <span class="tag">Intraday</span>
+                        <span class="tag">Medium</span>
+                        <span class="last-deployed">Last deployed 2 days ago</span>
+                    </div>
+                    
+                    <div class="description">
+                        This strategy uses delta-neutral positioning to minimize directional risk while capturing volatility premiums. It involves simultaneous long and short positions in options to maintain a delta-neutral portfolio.
+                    </div>
+                    <button class="show-more">Show more</button>
+                    
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Min Capital</div>
+                            <div class="option5-capital-with-info">
+                                <div class="stat-value">₹50k</div>
+                                <div class="info-container" style="position: relative;">
+                                    <span class="info-icon">ℹ️</span>
+                                    <span class="info-tooltip">Expiry: ₹50k | Non-Expiry: ₹35k</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">
+                                Avg Return
+                                <span class="asterisk-group">
+                                    <span class="asterisk">*</span>
+                                    <span class="asterisk-tooltip">Information is based on last 3 month trades</span>
+                                </span>
+                            </div>
+                            <div class="stat-value gradient">Backtest</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" style="color: #10b981;">Deployed</div>
+                        </div>
+                        <button class="view-btn">→</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Option 6: Stacked with Labels -->
+            <div class="option-section">
+                <div class="option-title">Option 6: Stacked Values</div>
+                <div class="option-description">Show both values stacked vertically with labels</div>
+                <div class="strategy-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                        <div class="strategy-actions">
+                            <button class="action-btn">🔖</button>
+                            <button class="action-btn">📤</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tags-row">
+                        <span class="tag">Intraday</span>
+                        <span class="tag">Medium</span>
+                        <span class="last-deployed">Last deployed 2 days ago</span>
+                    </div>
+                    
+                    <div class="description">
+                        This strategy uses delta-neutral positioning to minimize directional risk while capturing volatility premiums. It involves simultaneous long and short positions in options to maintain a delta-neutral portfolio.
+                    </div>
+                    <button class="show-more">Show more</button>
+                    
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Min Capital</div>
+                            <div class="option6-capital-stacked">
+                                <div class="capital-row">
+                                    <span class="capital-type">Expiry:</span>
+                                    <span class="capital-amount">₹50k</span>
+                                </div>
+                                <div class="capital-row">
+                                    <span class="capital-type">Non-Expiry:</span>
+                                    <span class="capital-amount">₹35k</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">
+                                Avg Return
+                                <span class="asterisk-group">
+                                    <span class="asterisk">*</span>
+                                    <span class="asterisk-tooltip">Information is based on last 3 month trades</span>
+                                </span>
+                            </div>
+                            <div class="stat-value gradient">Backtest</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" style="color: #10b981;">Deployed</div>
+                        </div>
+                        <button class="view-btn">→</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

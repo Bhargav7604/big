@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategy Deploy - Nudges Mockup v2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #F5F5F5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 32px;
+        }
+        
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        
+        .scenario-section {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        
+        .scenario-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        /* Strategy Detail Page Layout */
+        .strategy-detail-page {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+        }
+        
+        .strategy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 24px;
+        }
+        
+        .strategy-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        
+        .strategy-meta {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+        }
+        
+        .meta-item {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .deploy-section {
+            margin-top: 32px;
+            padding: 24px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e5e5e5;
+        }
+        
+        .deploy-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .deploy-options {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .deploy-option {
+            flex: 1;
+            padding: 16px;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .deploy-option:hover {
+            border-color: #5266FC;
+        }
+        
+        .deploy-option.selected {
+            border-color: #5266FC;
+            background: #E8EAFF;
+        }
+        
+        .option-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        
+        .option-description {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .deploy-button {
+            width: 100%;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #5367fc 0%, #4d6ff7 50%, #00e8b0 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .deploy-button:hover {
+            opacity: 0.9;
+        }
+        
+        /* Nudge Styles */
+        .nudge {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 8px;
+            display: flex;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .nudge-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            font-size: 20px;
+        }
+        
+        .nudge-content {
+            flex: 1;
+        }
+        
+        .nudge-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .nudge-message {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        /* Simulation Trade Nudge */
+        .nudge-simulation {
+            background: #E8EAFF;
+            border: 1px solid #5266FC;
+        }
+        
+        .nudge-simulation .nudge-icon {
+            color: #5266FC;
+        }
+        
+        .nudge-simulation .nudge-title {
+            color: #5266FC;
+        }
+        
+        .nudge-simulation .nudge-message {
+            color: #333;
+        }
+        
+        /* Live Trading Nudge */
+        .nudge-live-trading {
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+        }
+        
+        .nudge-live-trading .nudge-icon {
+            color: #F59E0B;
+        }
+        
+        .nudge-live-trading .nudge-title {
+            color: #92400E;
+        }
+        
+        .nudge-live-trading .nudge-message {
+            color: #333;
+        }
+        
+        /* Capital Comparison Table */
+        .capital-comparison {
+            margin-top: 12px;
+            background: white;
+            border-radius: 6px;
+            padding: 12px;
+            border: 1px solid #e5e5e5;
+        }
+        
+        .capital-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .capital-table th {
+            text-align: left;
+            padding: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .capital-table td {
+            padding: 8px;
+            font-size: 13px;
+            color: #1a1a1a;
+        }
+        
+        .capital-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .capital-value {
+            font-weight: 600;
+            color: #5266FC;
+        }
+        
+        /* Alternative: Card Style for Capital */
+        .capital-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .capital-card {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .capital-card-label {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .capital-card-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #5266FC;
+        }
+        
+        /* Option 2: Inline Capital Display */
+        .capital-inline {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e5e5e5;
+        }
+        
+        .capital-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .capital-item-label {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .capital-item-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #5266FC;
+        }
+        
+        .capital-divider {
+            width: 1px;
+            height: 30px;
+            background: #e5e5e5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">Strategy Deploy - Nudges Mockup v2</h1>
+        <p class="page-subtitle">Updated: "Paper Trade" / "Forward Test" renamed to "Simulation Trade"</p>
+        
+        <div class="scenarios-grid">
+            <!-- Scenario 1: Simulation Trade Mode -->
+            <div class="scenario-section">
+                <div class="scenario-title">Scenario 1: Simulation Trade Mode Deployment</div>
+                
+                <div class="strategy-detail-page">
+                    <div class="strategy-header">
+                        <div>
+                            <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                            <div class="strategy-meta">
+                                <span class="meta-item">Intraday</span>
+                                <span class="meta-item">Medium Risk</span>
+                                <span class="meta-item">Nifty</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="deploy-section">
+                        <div class="deploy-title">Deploy Strategy</div>
+                        
+                        <div class="deploy-options">
+                            <div class="deploy-option selected">
+                                <div class="option-label">Simulation Trade</div>
+                                <div class="option-description">Test your strategy without real money</div>
+                            </div>
+                            <div class="deploy-option">
+                                <div class="option-label">Live Trading</div>
+                                <div class="option-description">Real money and real trades</div>
+                            </div>
+                        </div>
+                        
+                        <button class="deploy-button">Deploy Strategy</button>
+                        
+                        <!-- Simulation Trade Nudge -->
+                        <div class="nudge nudge-simulation">
+                            <div class="nudge-icon">ℹ️</div>
+                            <div class="nudge-content">
+                                <div class="nudge-title">Simulation Trade Mode</div>
+                                <div class="nudge-message">
+                                    <strong>No real money will be used</strong> and <strong>no real trades will be placed on the exchange</strong>. This is a simulation mode to test your strategy performance using historical and live market data without any financial risk.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Scenario 2: Live Trading Mode -->
+            <div class="scenario-section">
+                <div class="scenario-title">Scenario 2: Live Trading Mode Deployment</div>
+                
+                <div class="strategy-detail-page">
+                    <div class="strategy-header">
+                        <div>
+                            <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                            <div class="strategy-meta">
+                                <span class="meta-item">Intraday</span>
+                                <span class="meta-item">Medium Risk</span>
+                                <span class="meta-item">Nifty</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="deploy-section">
+                        <div class="deploy-title">Deploy Strategy</div>
+                        
+                        <div class="deploy-options">
+                            <div class="deploy-option">
+                                <div class="option-label">Simulation Trade</div>
+                                <div class="option-description">Test your strategy without real money</div>
+                            </div>
+                            <div class="deploy-option selected">
+                                <div class="option-label">Live Trading</div>
+                                <div class="option-description">Real money and real trades</div>
+                            </div>
+                        </div>
+                        
+                        <button class="deploy-button">Deploy Strategy</button>
+                        
+                        <!-- Live Trading Nudge - Option 1: Table -->
+                        <div class="nudge nudge-live-trading">
+                            <div class="nudge-icon">⚠️</div>
+                            <div class="nudge-content">
+                                <div class="nudge-title">Capital Requirements Vary</div>
+                                <div class="nudge-message">
+                                    Capital requirements are different for <strong>Expiry Day</strong> and <strong>Non-Expiry Day</strong>. Please ensure you have sufficient capital available.
+                                </div>
+                                
+                                <div class="capital-comparison">
+                                    <table class="capital-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Day Type</th>
+                                                <th>Minimum Capital Required</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Expiry Day</td>
+                                                <td class="capital-value">₹50,000</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Non-Expiry Day</td>
+                                                <td class="capital-value">₹35,000</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Alternative Designs Section -->
+        <div style="margin-top: 48px;">
+            <h2 style="font-size: 20px; font-weight: 700; color: #1a1a1a; margin-bottom: 24px;">Alternative Capital Display Options</h2>
+            
+            <div class="scenarios-grid">
+                <!-- Option 2: Card Style -->
+                <div class="scenario-section">
+                    <div class="scenario-title">Option 2: Card Style Capital Display</div>
+                    
+                    <div class="strategy-detail-page">
+                        <div class="deploy-section">
+                            <div class="nudge nudge-live-trading">
+                                <div class="nudge-icon">⚠️</div>
+                                <div class="nudge-content">
+                                    <div class="nudge-title">Capital Requirements Vary</div>
+                                    <div class="nudge-message">
+                                        Capital requirements are different for <strong>Expiry Day</strong> and <strong>Non-Expiry Day</strong>. Please ensure you have sufficient capital available.
+                                    </div>
+                                    
+                                    <div class="capital-cards">
+                                        <div class="capital-card">
+                                            <div class="capital-card-label">Expiry Day</div>
+                                            <div class="capital-card-value">₹50,000</div>
+                                        </div>
+                                        <div class="capital-card">
+                                            <div class="capital-card-label">Non-Expiry Day</div>
+                                            <div class="capital-card-value">₹35,000</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Option 3: Inline Style -->
+                <div class="scenario-section">
+                    <div class="scenario-title">Option 3: Inline Capital Display</div>
+                    
+                    <div class="strategy-detail-page">
+                        <div class="deploy-section">
+                            <div class="nudge nudge-live-trading">
+                                <div class="nudge-icon">⚠️</div>
+                                <div class="nudge-content">
+                                    <div class="nudge-title">Capital Requirements Vary</div>
+                                    <div class="nudge-message">
+                                        Capital requirements are different for <strong>Expiry Day</strong> and <strong>Non-Expiry Day</strong>. Please ensure you have sufficient capital available.
+                                    </div>
+                                    
+                                    <div class="capital-inline">
+                                        <div class="capital-item">
+                                            <div class="capital-item-label">Expiry Day</div>
+                                            <div class="capital-item-value">₹50,000</div>
+                                        </div>
+                                        <div class="capital-divider"></div>
+                                        <div class="capital-item">
+                                            <div class="capital-item-label">Non-Expiry Day</div>
+                                            <div class="capital-item-value">₹35,000</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

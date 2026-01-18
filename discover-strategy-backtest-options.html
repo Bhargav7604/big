@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Strategy - Backtest Period Design Options</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #F5F5F5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 32px;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .option-section {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .option-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .option-description {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+        
+        .strategy-card {
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .strategy-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        
+        .tag {
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #E8EAFF;
+            color: #5266FC;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e5e5;
+        }
+        
+        .stat-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .stat-label {
+            font-size: 9px;
+            color: #666;
+        }
+        
+        .stat-value {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .stat-value.gradient {
+            background: linear-gradient(to right, #4d6ff7, #00e8b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Option 1: Sub-label below Avg Return */
+        .option1-avg-return {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .backtest-sub-label {
+            font-size: 8px;
+            color: #999;
+            font-weight: 400;
+        }
+        
+        /* Option 2: Small text below Backtest value */
+        .option2-avg-return {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .backtest-period-text {
+            font-size: 9px;
+            color: #666;
+            font-weight: 400;
+        }
+        
+        /* Option 3: Integrated into text */
+        .option3-avg-return {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .backtest-integrated {
+            font-size: 12px;
+            font-weight: 600;
+            background: linear-gradient(to right, #4d6ff7, #00e8b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Option 4: Small badge next to label */
+        .option4-avg-return {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .option4-label-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .backtest-badge {
+            font-size: 8px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            background: #f0f0f0;
+            color: #666;
+            border: 1px solid #e5e5e5;
+        }
+        
+        /* Option 5: Icon with tooltip style */
+        .option5-avg-return {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .option5-value-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .backtest-icon {
+            font-size: 10px;
+            color: #999;
+            cursor: help;
+        }
+        
+        .backtest-icon:hover::after {
+            content: "3 months";
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-left: 8px;
+            white-space: nowrap;
+        }
+        
+        /* Option 6: Small note below stats row */
+        .option6-stats-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .backtest-note {
+            font-size: 9px;
+            color: #999;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        /* Option 7: Clean badge below value */
+        .option7-avg-return {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .backtest-badge-clean {
+            font-size: 9px;
+            color: #666;
+            font-weight: 400;
+            padding-top: 2px;
+        }
+        
+        /* Option 8: Parentheses style */
+        .option8-avg-return {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .backtest-parentheses {
+            font-size: 10px;
+            color: #999;
+            font-weight: 400;
+        }
+        
+        .view-btn {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #5367fc 0%, #4d6ff7 50%, #00e8b0 100%);
+            border: none;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-left: 12px;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">Backtest Period Indicator - Design Options</h1>
+        <p class="page-subtitle">Please review the different design options and choose the one that looks best</p>
+        
+        <div class="options-grid">
+            <!-- Option 1: Sub-label below Avg Return label -->
+            <div class="option-section">
+                <div class="option-title">Option 1: Sub-label below "Avg Return"</div>
+                <div class="option-description">Backtest period appears as a small sub-label below the "Avg Return" label</div>
+                <div class="strategy-card">
+                    <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                    <div class="tags-row">
+                        <span class="tag">Intraday</span>
+                        <span class="tag">Medium</span>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Min Capital</div>
+                            <div class="stat-value">₹50k</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="option1-avg-return">
+                                <div class="stat-label">
+                                    Avg Return
+                                    <span class="backtest-sub-label"> (3 months)</span>
+                                </div>
+                                <div class="stat-value gradient">Backtest</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" style="color: #10b981;">Deployed</div>
+                        </div>
+                        <button class="view-btn">→</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Option 2: Small text below Backtest value -->
+            <div class="option-section">
+                <div class="option-title">Option 2: Below "Backtest" value</div>
+                <div class="option-description">Backtest period appears as small text directly below the "Backtest" value</div>
+                <div class="strategy-card">
+                    <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                    <div class="tags-row">
+                        <span class="tag">Intraday</span>
+                        <span class="tag">Medium</span>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Min Capital</div>
+                            <div class="stat-value">₹50k</div>
+                            </div>
+                        <div class="stat-item">
+                            <div class="option2-avg-return">
+                                <div class="stat-label">Avg Return</div>
+                                <div class="stat-value gradient">Backtest</div>
+                                <div class="backtest-period-text">3 months</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" style="color: #10b981;">Deployed</div>
+                        </div>
+                        <button class="view-btn">→</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Option 3: Integrated into Backtest text -->
+            <div class="option-section">
+                <div class="option-title">Option 3: Integrated in text</div>
+                <div class="option-description">Backtest period integrated directly into the "Backtest" text</div>
+                <div class="strategy-card">
+                    <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                    <div class="tags-row">
+                        <span class="tag">Intraday</span>
+                        <span class="tag">Medium</span>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Min Capital</div>
+                            <div class="stat-value">₹50k</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="option3-avg-return">
+                                <div class="stat-label">Avg Return</div>
+                                <div class="backtest-integrated">Backtest (3M)</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" style="color: #10b981;">Deployed</div>
+                        </div>
+                        <button class="view-btn">→</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Option 4: Small badge next to label -->
+            <div class="option-section">
+                <div class="option-title">Option 4: Badge next to label</div>
+                <div class="option-description">Small badge appears next to the "Avg Return" label</div>
+                <div class="strategy-card">
+                    <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                    <div class="tags-row">
+                        <span class="tag">Intraday</span>
+                        <span class="tag">Medium</span>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Min Capital</div>
+                            <div class="stat-value">₹50k</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="option4-avg-return">
+                                <div class="option4-label-row">
+                                    <div class="stat-label">Avg Return</div>
+                                    <span class="backtest-badge">3M</span>
+                                </div>
+                                <div class="stat-value gradient">Backtest</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" style="color: #10b981;">Deployed</div>
+                        </div>
+                        <button class="view-btn">→</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Option 5: Icon with hover tooltip -->
+            <div class="option-section">
+                <div class="option-title">Option 5: Icon with tooltip</div>
+                <div class="option-description">Small info icon next to value, shows period on hover</div>
+                <div class="strategy-card">
+                    <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                    <div class="tags-row">
+                        <span class="tag">Intraday</span>
+                        <span class="tag">Medium</span>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Min Capital</div>
+                            <div class="stat-value">₹50k</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="option5-avg-return">
+                                <div class="stat-label">Avg Return</div>
+                                <div class="option5-value-row">
+                                    <div class="stat-value gradient">Backtest</div>
+                                    <span class="backtest-icon" title="Backtest period: 3 months">ℹ️</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" style="color: #10b981;">Deployed</div>
+                        </div>
+                        <button class="view-btn">→</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Option 6: Note below stats row -->
+            <div class="option-section">
+                <div class="option-title">Option 6: Note below stats</div>
+                <div class="option-description">Backtest period shown as a small note below the entire stats row</div>
+                <div class="strategy-card">
+                    <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                    <div class="tags-row">
+                        <span class="tag">Intraday</span>
+                        <span class="tag">Medium</span>
+                    </div>
+                    <div class="option6-stats-container">
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <div class="stat-label">Min Capital</div>
+                                <div class="stat-value">₹50k</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Avg Return</div>
+                                <div class="stat-value gradient">Backtest</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Status</div>
+                                <div class="stat-value" style="color: #10b981;">Deployed</div>
+                            </div>
+                            <button class="view-btn">→</button>
+                        </div>
+                        <div class="backtest-note">Backtest period: 3 months</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Option 7: Clean badge below value -->
+            <div class="option-section">
+                <div class="option-title">Option 7: Clean badge below</div>
+                <div class="option-description">Simple, clean text badge directly below the "Backtest" value</div>
+                <div class="strategy-card">
+                    <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                    <div class="tags-row">
+                        <span class="tag">Intraday</span>
+                        <span class="tag">Medium</span>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Min Capital</div>
+                            <div class="stat-value">₹50k</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="option7-avg-return">
+                                <div class="stat-label">Avg Return</div>
+                                <div class="stat-value gradient">Backtest</div>
+                                <div class="backtest-badge-clean">3 months</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" style="color: #10b981;">Deployed</div>
+                        </div>
+                        <button class="view-btn">→</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Option 8: Parentheses style -->
+            <div class="option-section">
+                <div class="option-title">Option 8: Parentheses style</div>
+                <div class="option-description">Backtest period in parentheses below the label</div>
+                <div class="strategy-card">
+                    <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                    <div class="tags-row">
+                        <span class="tag">Intraday</span>
+                        <span class="tag">Medium</span>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Min Capital</div>
+                            <div class="stat-value">₹50k</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="option8-avg-return">
+                                <div class="stat-label">Avg Return</div>
+                                <div class="stat-value gradient">Backtest</div>
+                                <div class="backtest-parentheses">(3 months)</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" style="color: #10b981;">Deployed</div>
+                        </div>
+                        <button class="view-btn">→</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

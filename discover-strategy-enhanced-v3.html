@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Strategy - Enhanced Layout v3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #F5F5F5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 24px;
+        }
+        
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+        
+        .strategy-card {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: box-shadow 0.2s;
+            position: relative;
+        }
+        
+        .strategy-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        /* Line 1: Strategy Name with Actions */
+        .strategy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .strategy-name {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            line-height: 1.4;
+        }
+        
+        .strategy-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+        }
+        
+        .action-btn:hover {
+            color: #5266FC;
+        }
+        
+        .action-btn.bookmarked {
+            color: #5266FC;
+        }
+        
+        /* Line 2: Tags and Last Deployed (Same Line) - Fixed Height */
+        .tags-and-deployed-container {
+            min-height: 28px; /* Fixed height to ensure consistent positioning */
+            display: flex;
+            align-items: center;
+        }
+        
+        .tags-and-deployed {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .tag {
+            font-size: 10px;
+            font-weight: 400;
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        
+        .tag.intraday {
+            background: #E8EAFF;
+            color: #5266FC;
+        }
+        
+        .tag.medium {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        
+        .tag.nifty {
+            background: #DCFCE7;
+            color: #166534;
+        }
+        
+        .tag.options {
+            background: #F3E8FF;
+            color: #7C3AED;
+        }
+        
+        /* Last Deployed Tag - Darker Background */
+        .last-deployed-tag {
+            font-size: 9px;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #5266FC 0%, #3b9fd8 50%, #00e8b0 100%);
+            color: #ffffff;
+            white-space: nowrap;
+            margin-left: auto;
+        }
+        
+        /* Description Section - Fixed Position */
+        .description-section {
+            margin-top: 0;
+            min-height: 60px; /* Ensure consistent height */
+        }
+        
+        .description-text {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #666;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .show-more-btn {
+            font-size: 12px;
+            font-weight: 600;
+            color: #5266FC;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+        
+        .show-more-btn:hover {
+            color: #3d4fc7;
+        }
+        
+        /* Bottom Stats Row */
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: auto;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .stat-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .stat-label {
+            font-size: 9px;
+            color: #666;
+        }
+        
+        .stat-value {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .stat-value.gradient {
+            background: linear-gradient(to right, #4d6ff7, #00e8b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: underline;
+            text-decoration-color: #4d6ff7;
+            text-underline-offset: 2px;
+        }
+        
+        /* Backtest Period Indicator - Next to Avg Return */
+        .avg-return-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .avg-return-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .backtest-indicator {
+            font-size: 9px;
+            font-weight: 500;
+            padding: 3px 6px;
+            border-radius: 4px;
+            background: #f0f0f0;
+            color: #666;
+            border: 1px solid #e5e5e5;
+            white-space: nowrap;
+        }
+        
+        .backtest-indicator::before {
+            content: "📊 ";
+        }
+        
+        .view-btn {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #5367fc 0%, #4d6ff7 50%, #00e8b0 100%);
+            border: none;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            margin-left: 12px;
+            flex-shrink: 0;
+        }
+        
+        /* Modal/Popup for Full Description */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #666;
+            transition: background 0.2s;
+        }
+        
+        .modal-close:hover {
+            background: #e5e5e5;
+        }
+        
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .modal-description {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">Discover Strategy - Enhanced Layout v3</h1>
+        <p style="margin-bottom: 24px; color: #666;">Changes: Backtest period moved next to Avg Return, "Show more" button restored for long descriptions</p>
+        
+        <div class="strategy-grid">
+            <!-- Example 1: Strategy with Last Deployed (2 tags max) and Long Description -->
+            <div class="strategy-card">
+                <div class="strategy-header">
+                    <div class="strategy-name">Bank Nifty-Delta Neutral Strategy</div>
+                    <div class="strategy-actions">
+                        <button class="action-btn bookmarked">🔖</button>
+                        <button class="action-btn">📤</button>
+                    </div>
+                </div>
+                
+                <div class="tags-and-deployed-container">
+                    <div class="tags-and-deployed">
+                        <span class="tag intraday">Intraday</span>
+                        <span class="tag medium">Medium</span>
+                        <span class="last-deployed-tag">Last deployed 2 days ago</span>
+                    </div>
+                </div>
+                
+                <div class="description-section">
+                    <div class="description-text">
+                        This strategy uses delta-neutral positioning to minimize directional risk while capturing volatility premiums. It involves simultaneous long and short positions in options to maintain a delta-neutral portfolio. The strategy is designed to profit from time decay and volatility changes rather than directional moves in the underlying asset. This approach requires careful monitoring and rebalancing to maintain the delta-neutral state.
+                    </div>
+                    <button class="show-more-btn" onclick="openModal('Bank Nifty-Delta Neutral Strategy', 'This strategy uses delta-neutral positioning to minimize directional risk while capturing volatility premiums. It involves simultaneous long and short positions in options to maintain a delta-neutral portfolio. The strategy is designed to profit from time decay and volatility changes rather than directional moves in the underlying asset. This approach requires careful monitoring and rebalancing to maintain the delta-neutral state. The strategy works best in range-bound markets where volatility is expected to remain elevated.')">
+                        Show more
+                    </button>
+                </div>
+                
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Min Capital</div>
+                        <div class="stat-value">₹50k</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="avg-return-container">
+                            <div class="stat-label">Avg Return</div>
+                            <div class="avg-return-row">
+                                <div class="stat-value gradient">Backtest</div>
+                                <div class="backtest-indicator">3 months</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Status</div>
+                        <div class="stat-value" style="color: #10b981;">Deployed</div>
+                    </div>
+                    <button class="view-btn">→</button>
+                </div>
+            </div>
+            
+            <!-- Example 2: Strategy without Last Deployed (all tags shown) -->
+            <div class="strategy-card">
+                <div class="strategy-header">
+                    <div class="strategy-name">Iron Butterfly Options Strategy</div>
+                    <div class="strategy-actions">
+                        <button class="action-btn">🔖</button>
+                        <button class="action-btn">📤</button>
+                    </div>
+                </div>
+                
+                <div class="tags-and-deployed-container">
+                    <div class="tags-and-deployed">
+                        <span class="tag intraday">Intraday</span>
+                        <span class="tag medium">Medium</span>
+                        <span class="tag nifty">Nifty</span>
+                        <span class="tag options">Options</span>
+                    </div>
+                </div>
+                
+                <div class="description-section">
+                    <div class="description-text">
+                        A neutral options strategy that profits from low volatility. It involves selling an at-the-money call and put while buying out-of-the-money options for protection.
+                    </div>
+                </div>
+                
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Min Capital</div>
+                        <div class="stat-value">₹75k</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="avg-return-container">
+                            <div class="stat-label">Avg Return</div>
+                            <div class="avg-return-row">
+                                <div class="stat-value gradient">Backtest</div>
+                                <div class="backtest-indicator">6 months</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Status</div>
+                        <div class="stat-value" style="color: #f59e0b;">Available</div>
+                    </div>
+                    <button class="view-btn">→</button>
+                </div>
+            </div>
+            
+            <!-- Example 3: Strategy with Last Deployed and Very Long Description -->
+            <div class="strategy-card">
+                <div class="strategy-header">
+                    <div class="strategy-name">Bear Put Spread Strategy</div>
+                    <div class="strategy-actions">
+                        <button class="action-btn">🔖</button>
+                        <button class="action-btn">📤</button>
+                    </div>
+                </div>
+                
+                <div class="tags-and-deployed-container">
+                    <div class="tags-and-deployed">
+                        <span class="tag intraday">Intraday</span>
+                        <span class="tag medium">Medium</span>
+                        <span class="last-deployed-tag">Last deployed 1 week ago</span>
+                    </div>
+                </div>
+                
+                <div class="description-section">
+                    <div class="description-text">
+                        This is a bearish options strategy that involves buying a put option with a higher strike price and selling a put option with a lower strike price. The strategy is used when an investor expects a moderate decline in the price of the underlying asset. It limits both the potential loss and potential profit. The maximum profit is achieved when the price of the underlying asset is at or below the lower strike price at expiration. The maximum loss occurs when the price is at or above the higher strike price. This strategy is ideal for traders who want to profit from a downward move while limiting their risk exposure. The strategy requires careful selection of strike prices and expiration dates to optimize the risk-reward ratio.
+                    </div>
+                    <button class="show-more-btn" onclick="openModal('Bear Put Spread Strategy', 'This is a bearish options strategy that involves buying a put option with a higher strike price and selling a put option with a lower strike price. The strategy is used when an investor expects a moderate decline in the price of the underlying asset. It limits both the potential loss and potential profit. The maximum profit is achieved when the price of the underlying asset is at or below the lower strike price at expiration. The maximum loss occurs when the price is at or above the higher strike price. This strategy is ideal for traders who want to profit from a downward move while limiting their risk exposure. The strategy requires careful selection of strike prices and expiration dates to optimize the risk-reward ratio. This approach is particularly effective in markets showing bearish signals or during periods of expected volatility expansion.')">
+                        Show more
+                    </button>
+                </div>
+                
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Min Capital</div>
+                        <div class="stat-value">₹30k</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="avg-return-container">
+                            <div class="stat-label">Avg Return</div>
+                            <div class="avg-return-row">
+                                <div class="stat-value gradient">Backtest</div>
+                                <div class="backtest-indicator">1 month</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Status</div>
+                        <div class="stat-value" style="color: #10b981;">Deployed</div>
+                    </div>
+                    <button class="view-btn">→</button>
+                </div>
+            </div>
+            
+            <!-- Example 4: Strategy with Last Deployed (only 1 tag shown) -->
+            <div class="strategy-card">
+                <div class="strategy-header">
+                    <div class="strategy-name">Nifty-ATM ±2 Straddle</div>
+                    <div class="strategy-actions">
+                        <button class="action-btn">🔖</button>
+                        <button class="action-btn">📤</button>
+                    </div>
+                </div>
+                
+                <div class="tags-and-deployed-container">
+                    <div class="tags-and-deployed">
+                        <span class="tag intraday">Intraday</span>
+                        <span class="last-deployed-tag">Last deployed 3 hours ago</span>
+                    </div>
+                </div>
+                
+                <div class="description-section">
+                    <div class="description-text">
+                        A straddle strategy that involves buying both a call and put option at the same strike price, positioned at-the-money with a ±2 range. This strategy profits from significant price movements in either direction.
+                    </div>
+                </div>
+                
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Min Capital</div>
+                        <div class="stat-value">₹40k</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="avg-return-container">
+                            <div class="stat-label">Avg Return</div>
+                            <div class="avg-return-row">
+                                <div class="stat-value gradient">Backtest</div>
+                                <div class="backtest-indicator">12 months</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Status</div>
+                        <div class="stat-value" style="color: #10b981;">Deployed</div>
+                    </div>
+                    <button class="view-btn">→</button>
+                </div>
+            </div>
+            
+            <!-- Example 5: Strategy without Last Deployed (all 4 tags) with Long Description -->
+            <div class="strategy-card">
+                <div class="strategy-header">
+                    <div class="strategy-name">Call Backspread Strategy</div>
+                    <div class="strategy-actions">
+                        <button class="action-btn bookmarked">🔖</button>
+                        <button class="action-btn">📤</button>
+                    </div>
+                </div>
+                
+                <div class="tags-and-deployed-container">
+                    <div class="tags-and-deployed">
+                        <span class="tag intraday">Intraday</span>
+                        <span class="tag medium">Medium</span>
+                        <span class="tag nifty">Nifty</span>
+                        <span class="tag options">Options</span>
+                    </div>
+                </div>
+                
+                <div class="description-section">
+                    <div class="description-text">
+                        A bullish options strategy that involves selling fewer call options at a lower strike and buying more call options at a higher strike. This strategy profits from upward price movements. The strategy is particularly effective in markets with strong upward momentum and can provide unlimited profit potential while limiting downside risk. The key to success with this strategy is proper strike selection and timing of entry.
+                    </div>
+                    <button class="show-more-btn" onclick="openModal('Call Backspread Strategy', 'A bullish options strategy that involves selling fewer call options at a lower strike and buying more call options at a higher strike. This strategy profits from upward price movements. The strategy is particularly effective in markets with strong upward momentum and can provide unlimited profit potential while limiting downside risk. The key to success with this strategy is proper strike selection and timing of entry. This approach works best when you expect significant price appreciation but want to reduce the initial cost of the position.')">
+                        Show more
+                    </button>
+                </div>
+                
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Min Capital</div>
+                        <div class="stat-value">₹60k</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="avg-return-container">
+                            <div class="stat-label">Avg Return</div>
+                            <div class="avg-return-row">
+                                <div class="stat-value gradient">Backtest</div>
+                                <div class="backtest-indicator">2 months</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Status</div>
+                        <div class="stat-value" style="color: #f59e0b;">Available</div>
+                    </div>
+                    <button class="view-btn">→</button>
+                </div>
+            </div>
+            
+            <!-- Example 6: Strategy with Last Deployed (2 tags) and Short Description -->
+            <div class="strategy-card">
+                <div class="strategy-header">
+                    <div class="strategy-name">Lorentzian Classification Strategy</div>
+                    <div class="strategy-actions">
+                        <button class="action-btn">🔖</button>
+                        <button class="action-btn">📤</button>
+                    </div>
+                </div>
+                
+                <div class="tags-and-deployed-container">
+                    <div class="tags-and-deployed">
+                        <span class="tag nifty">Nifty</span>
+                        <span class="tag options">Options</span>
+                        <span class="last-deployed-tag">Last deployed 5 days ago</span>
+                    </div>
+                </div>
+                
+                <div class="description-section">
+                    <div class="description-text">
+                        A machine learning-based strategy using Lorentzian distance classification to predict market movements. This advanced approach combines technical indicators with pattern recognition.
+                    </div>
+                </div>
+                
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Min Capital</div>
+                        <div class="stat-value">₹80k</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="avg-return-container">
+                            <div class="stat-label">Avg Return</div>
+                            <div class="avg-return-row">
+                                <div class="stat-value gradient">Backtest</div>
+                                <div class="backtest-indicator">9 months</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Status</div>
+                        <div class="stat-value" style="color: #10b981;">Deployed</div>
+                    </div>
+                    <button class="view-btn">→</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal/Popup for Full Description -->
+    <div class="modal-overlay" id="descriptionModal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Strategy Description</div>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-description" id="modalDescription">
+                    Full description will appear here...
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function openModal(title, description) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalDescription').textContent = description;
+            document.getElementById('descriptionModal').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('descriptionModal').classList.remove('active');
+        }
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
